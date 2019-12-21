@@ -1,0 +1,332 @@
+#include "pch.h"
+#include <iostream>
+#include "time.h"
+#include <Windows.h>
+#include <random>
+
+#include<sys/types.h>
+using namespace std;
+class mapa
+{
+
+private:
+	int Plansza[12][12];
+	int random;
+public:
+
+
+	mapa()
+	{
+		for (int i = 0; i < 12; i++) {
+			for (int y = 0; y < 12; y++) {
+
+				Plansza[i][y] = 0;
+			}
+
+		}
+	}
+
+
+	int get_rand2()
+	{
+
+		random_device rd;
+		std::mt19937 mt(rd());
+		std::uniform_int_distribution<std::mt19937::result_type> dist(0, 1);
+		//srand(rand());
+		return dist(mt);
+		//return rand() % 2;
+	}
+	int get_rand()
+	{
+
+		//srand(rand());
+		random_device rd;
+		std::mt19937 mt(rd());
+		std::uniform_int_distribution<std::mt19937::result_type> dist(1, 10);
+
+
+
+
+		//return  rand() % 10 + 1;
+		return dist(mt);
+	}
+	void setlotniskowiec()
+	{
+
+		bool t = false;
+		while (t == false) {
+
+			int tryb6 = get_rand2();
+
+
+			int x = get_rand();
+			int y = get_rand();
+
+			x = 5;
+			y = 5;
+			if (tryb6 == 0 && x < 6) {
+				Plansza[x][y] = 6;
+				Plansza[x + 1][y] = 6;
+				Plansza[x + 2][y] = 6;
+				Plansza[x + 3][y] = 6;
+				Plansza[x + 4][y] = 6;
+				Plansza[x + 5][y] = 6;
+				t = true;
+			}
+			if (tryb6 == 1 && y < 6)
+			{
+				Plansza[x][y] = 6;
+				Plansza[x][y + 1] = 6;
+				Plansza[x][y + 2] = 6;
+				Plansza[x][y + 3] = 6;
+				Plansza[x][y + 4] = 6;
+				Plansza[x][y + 5] = 6;
+				t = true;
+			}
+		}
+	}
+	void setkrazownik2()
+	{
+		int t4 = 0;
+		while (t4 < 2)
+		{
+			int tryb4 = get_rand2();
+			int x = get_rand();
+			int y = get_rand();
+
+			bool CHECK = true;
+			int i = x;
+			int j = y;
+
+			if (tryb4 == 0) {///check zderzenie;
+				for (i = x - 1; i <= x + 4; i++)
+				{
+					for (j = y - 1; j <= y + 1; j++) {
+
+
+						if (Plansza[i][j] != 0)
+						{
+							CHECK = false;
+
+						}
+					}
+				}
+			}
+			else {
+				for (i = x - 1; i <= x + 1; i++)
+				{
+					for (j = y - 1; j <= y + 4; j++) {
+
+
+						if (Plansza[i][j] != 0)
+						{
+							CHECK = false;
+						}
+					}
+				}
+
+
+			}
+
+			if (tryb4 == 0 && x < 8 && CHECK == true)
+			{
+				Plansza[x][y] = 4;
+				Plansza[x + 1][y] = 4;
+				Plansza[x + 2][y] = 4;
+				Plansza[x + 3][y] = 4;
+				t4++;
+
+			}
+			if (tryb4 == 1 && y < 8 && CHECK == true)
+			{
+				Plansza[x][y] = 4;
+				Plansza[x][y + 1] = 4;
+				Plansza[x][y + 2] = 4;
+				Plansza[x][y + 3] = 4;
+
+				t4++;
+			}
+		}
+
+
+	}
+	void setniszczyciel2() {
+		int t3 = 0;
+		while (t3 < 2)
+		{
+			int tryb3 = get_rand2();
+			int x = get_rand();
+			int y = get_rand();
+
+			bool CHECK = true;
+			int i = x;
+			int j = y;
+
+			if (tryb3 == 0) {///check zderzenie;
+				for (i = x - 1; i <= x + 3; i++)
+				{
+					for (j = y - 1; j <= y + 1; j++) {
+
+
+						if (Plansza[i][j] != 0)
+						{
+							CHECK = false;
+
+						}
+					}
+				}
+			}
+			else {
+				for (i = x - 1; i <= x + 1; i++)
+				{
+					for (j = y - 1; j <= y + 3; j++) {
+
+
+						if (Plansza[i][j] != 0)
+						{
+							CHECK = false;
+
+						}
+					}
+				}
+
+
+			}
+
+			if (tryb3 == 0 && x < 9 && CHECK == true)
+			{
+				Plansza[x][y] = 3;
+				Plansza[x + 1][y] = 3;
+				Plansza[x + 2][y] = 3;
+
+				t3++;
+
+			}
+			if (tryb3 == 1 && y < 9 && CHECK == true)
+			{
+				Plansza[x][y] = 3;
+				Plansza[x][y + 1] = 3;
+				Plansza[x][y + 2] = 3;
+				t3++;
+			}
+		}
+	}
+
+	void setkuter2() {
+
+		int t2 = 0;
+		while (t2 < 2)
+		{
+			int tryb2 = get_rand2();
+			int x = get_rand();
+			int y = get_rand();
+
+			bool CHECK = true;
+			int i = x;
+			int j = y;
+
+			if (tryb2 == 0) {///check zderzenie;
+				for (i = x - 1; i <= x + 2; i++)
+				{
+					for (j = y - 1; j <= y + 1; j++) {
+
+
+						if (Plansza[i][j] != 0)
+						{
+							CHECK = false;
+
+						}
+					}
+				}
+			}
+			else {
+				for (i = x - 1; i <= x + 1; i++)
+				{
+					for (j = y - 1; j <= y + 2; j++) {
+
+
+						if (Plansza[i][j] != 0)
+						{
+							CHECK = false;
+
+						}
+					}
+				}
+			}
+			if (tryb2 == 0 && x < 10 && CHECK == true)
+			{
+				Plansza[x][y] = 2;
+				Plansza[x + 1][y] = 2;
+				t2++;
+			}
+			if (tryb2 == 1 && y < 10 && CHECK == true)
+			{
+				Plansza[x][y] = 2;
+				Plansza[x][y + 1] = 2;
+				t2++;
+			}
+		}
+
+
+
+	}
+	void showplansza()
+	{
+		for (int i = 1; i < 11; i++) {
+			for (int y = 1; y < 11; y++) {
+
+				cout << Plansza[y][i];
+				cout << " ";
+			}
+			cout << endl;
+		}
+
+
+	}
+	void setmapa() {
+		setlotniskowiec();
+		setkrazownik2();
+		setniszczyciel2();
+		setkuter2();
+
+
+	}
+	void start()
+	{
+		int x = 0, y = 0;
+		bool t = 0;
+		do {
+			cin >> x;
+			cin >> y;
+			if (x > 0 && x < 11 && y>1 && y < 11)
+			{
+				t = 1;
+			}
+
+		} while (t == 1);
+
+
+	}
+	int check(int x, int y) {
+		if (Plansza[x][y] == 0) {
+
+			return 0;// pudlo
+		}
+		if (Plansza[x][y] == 8 || 9)
+		{
+			return 1;// niedozwolone powtarzanie strzalow
+		}
+		else
+			return 2;//traf
+	}
+	void setPudlo(int x, int y) {
+
+		Plansza[x][y] = 1;
+	}
+	void setTraf(int x, int y) {
+
+		Plansza[x][y] = 9;
+	}
+
+};
