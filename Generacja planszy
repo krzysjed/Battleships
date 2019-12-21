@@ -3,33 +3,23 @@
 #include "time.h"
 #include <Windows.h>
 #include <random>
-
-#include<sys/types.h>
 using namespace std;
 class mapa
 {
-
 private:
 	int Plansza[12][12];
 	int random;
 public:
-
-
 	mapa()
 	{
 		for (int i = 0; i < 12; i++) {
 			for (int y = 0; y < 12; y++) {
-
 				Plansza[i][y] = 0;
 			}
-
 		}
 	}
-
-
 	int get_rand2()
 	{
-
 		random_device rd;
 		std::mt19937 mt(rd());
 		std::uniform_int_distribution<std::mt19937::result_type> dist(0, 1);
@@ -37,32 +27,24 @@ public:
 		return dist(mt);
 		//return rand() % 2;
 	}
+	
 	int get_rand()
 	{
-
 		//srand(rand());
 		random_device rd;
 		std::mt19937 mt(rd());
 		std::uniform_int_distribution<std::mt19937::result_type> dist(1, 10);
-
-
-
-
 		//return  rand() % 10 + 1;
 		return dist(mt);
 	}
+	
 	void setlotniskowiec()
 	{
-
 		bool t = false;
 		while (t == false) {
-
 			int tryb6 = get_rand2();
-
-
 			int x = get_rand();
 			int y = get_rand();
-
 			x = 5;
 			y = 5;
 			if (tryb6 == 0 && x < 6) {
@@ -86,6 +68,7 @@ public:
 			}
 		}
 	}
+	
 	void setkrazownik2()
 	{
 		int t4 = 0;
@@ -94,39 +77,34 @@ public:
 			int tryb4 = get_rand2();
 			int x = get_rand();
 			int y = get_rand();
-
 			bool CHECK = true;
 			int i = x;
 			int j = y;
-
+			
 			if (tryb4 == 0) {///check zderzenie;
 				for (i = x - 1; i <= x + 4; i++)
 				{
-					for (j = y - 1; j <= y + 1; j++) {
-
-
+					for (j = y - 1; j <= y + 1; j++) 
+					{
 						if (Plansza[i][j] != 0)
 						{
 							CHECK = false;
-
 						}
 					}
 				}
 			}
-			else {
+			else 
+			{
 				for (i = x - 1; i <= x + 1; i++)
 				{
-					for (j = y - 1; j <= y + 4; j++) {
-
-
+					for (j = y - 1; j <= y + 4; j++) 
+					{
 						if (Plansza[i][j] != 0)
 						{
 							CHECK = false;
 						}
 					}
 				}
-
-
 			}
 
 			if (tryb4 == 0 && x < 8 && CHECK == true)
@@ -138,6 +116,7 @@ public:
 				t4++;
 
 			}
+			
 			if (tryb4 == 1 && y < 8 && CHECK == true)
 			{
 				Plansza[x][y] = 4;
@@ -148,10 +127,9 @@ public:
 				t4++;
 			}
 		}
-
-
 	}
-	void setniszczyciel2() {
+	
+	void setniszczyciel2(){
 		int t3 = 0;
 		while (t3 < 2)
 		{
@@ -180,18 +158,14 @@ public:
 			else {
 				for (i = x - 1; i <= x + 1; i++)
 				{
-					for (j = y - 1; j <= y + 3; j++) {
-
-
+					for (j = y - 1; j <= y + 3; j++)
+					{
 						if (Plansza[i][j] != 0)
 						{
 							CHECK = false;
-
 						}
 					}
 				}
-
-
 			}
 
 			if (tryb3 == 0 && x < 9 && CHECK == true)
@@ -284,6 +258,7 @@ public:
 
 
 	}
+	
 	void setmapa() {
 		setlotniskowiec();
 		setkrazownik2();
@@ -292,6 +267,7 @@ public:
 
 
 	}
+	
 	void start()
 	{
 		int x = 0, y = 0;
