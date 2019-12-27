@@ -44,52 +44,39 @@ public:
 		litery.push_back("I");
 		litery.push_back("J");
 	}
-	void showpamiec() {
-		for (int j = 0; j < 8; j++) {
+	vector<pair<int, int>> re_pamiec(int i) {
+		return pamiec[i];
 
-			if (j == 0) {
-				for (int i = 0; i < 6; i++)
+	}
+	vector<pair<int, int>> znajdz_w_pamieci(int x, int y) {
+		int numer_statku;
+		for (int j = 0; j < pamiec.size(); j++)
+		{
+			for (int i = 0; i < pamiec[j].size(); i++)
+			{
+
+				if (x == pamiec[j][i].first && y == pamiec[j][i].second)
 				{
-
-					cout << pamiec[j][i].first;
-					cout << pamiec[j][i].second;
-					cout << endl;
+					numer_statku = j;
 				}
 			}
-			if (j == 1|| j == 2) {
-				for (int i = 0; i < 4; i++)
-				{
-
-					cout << pamiec[j][i].first;
-					cout << pamiec[j][i].second;
-					cout << endl;
-				}
-			}
-			if (j == 3|| j == 4) {
-				for (int i = 0; i < 3; i++)
-				{
-
-					cout << pamiec[j][i].first;
-					cout << pamiec[j][i].second;
-					cout << endl;
-				}
-			}
-			if (j == 5|| j == 6) {
-				for (int i = 0; i < 2; i++)
-				{
-
-					cout << pamiec[j][i].first;
-					cout << pamiec[j][i].second;
-					cout << endl;
-				}
-			}
-
-
-
-
-
 		}
+			return	 pamiec[numer_statku];
+	}
 
+	void showpamiec() 
+	{
+		for (int j = 0; j < pamiec.size(); j++)
+		{
+			for (int i = 0; i < pamiec[j].size(); i++)
+			{
+
+				cout << pamiec[j][i].first;
+				cout << pamiec[j][i].second;
+				cout << endl;
+				
+			}
+		}
 	}
 
 	int get_rand2()
@@ -166,7 +153,7 @@ public:
 					for (j = y - 1; j <= y + 1; j++) {
 
 
-						if (Plansza[i][j] != "0")
+						if (Plansza[i][j] != "0")///tu cos
 						{
 							CHECK = false;
 
@@ -210,8 +197,6 @@ public:
 				t4++;
 			}
 		}
-
-
 	}
 	void set_krazownik_2()
 	{
@@ -242,7 +227,8 @@ public:
 					}
 				}
 			}
-			else {
+			else 
+			{
 				for (i = x - 1; i <= x + 1; i++)
 				{
 					for (j = y - 1; j <= y + 3; j++) {
@@ -355,7 +341,6 @@ public:
 		if (Plansza[i][j] == "K") { k = 3; }
 		if (Plansza[i][j] == "N") { k = 2; }
 		return k;
-
 	}
 	void showplansza()
 	{
@@ -380,8 +365,8 @@ public:
 		set_niszczyciel_2();
 	}
 	
-	int check(int x, int y) {
-		
+	int check(int x, int y)
+	{
 		if (Plansza[x][y] == "0") {
 			
 			return 0;// pudlo
@@ -457,39 +442,73 @@ public:
 		if (x == "H") { return 8; }
 		if (x == "I") { return 9; }
 		if (x == "J") { return 10; }
-		else {
-
+		else 
+		{
 			cout << "Litery od A-J" << endl;
 			return 69;
 		} 
 	}
-	void check_zatoniecie(int i, int j,mapa bota,mapa celowania) 
+	mapa check_zatoniecie(int x, int y, mapa celowania)
 	{
-		bool polozenie;
-		int z,l=0,k;
-		z=bot.rozmiar(i, j);
-		if (celowania.get_plansza(i,j+1) == "X" || celowania.get_plansza(i,j-1) == "X") {
-			//pion;
-			polozenie = 0;
-		}
-		if (celowania.get_plansza(i + 1, j) == "X" || celowania.get_plansza(i - 1, j) == "X") {
-			polozenie = 1;	//poziom;
-		}
-		if (polozenie == 0) {
-			for (int d = 1; d < 11; d++)
+		vector<pair<int, int>> re_pamiec;
+		
+		re_pamiec = bot.znajdz_w_pamieci(x, y); // zapisane koordynaty topionego statku
+		int k = 1;
+		
+		
+
+		for (int i = 0; i < re_pamiec.size(); i++)
+		{
+			if (celowania.get_plansza(re_pamiec[i].first, re_pamiec[i].second) == "0")
 			{
-				if (bota.get_plansza(i, d) == "X") {
-					l++ ;
-				}
-				if (bota.get_plansza(i, d) == "0")
-					k = l;
-					l = 0;
-
-
+				k = 0;
 			}
 		}
+		if (k == 1) 
+		{
+			bool polozenie;
+			cout << "Zatopiony!" << endl;
+			if (re_pamiec[0].first == re_pamiec[1].first)
+			{
+				polozenie = 0;//pion
+			}
+			else polozenie = 1;//poziomo
+
+			if (polozenie == 0) /////umieszcza pola wokol statku zniszczonego
+			{
+				for (int i = 0; i < re_pamiec.size(); i++)
+				{
+					for (int I = -1; I < 2; I++) 
+					{
+						for (int j = -1; j < 2; j+=2)
+						{
+							celowania.setPudlo(re_pamiec[i].first + I, re_pamiec[i].second+j);
+						}
+					}
+				}
+			}
+			else {
+				for (int i = 0; i < re_pamiec.size(); i++)
+				{
+					for (int I = -1; I < 2; I++)
+					{
+						for (int j = -1; j < 2; j += 2)
+						{
+							celowania.setPudlo(re_pamiec[i].first + j, re_pamiec[i].second + I);
+						}
+					}
+				}
+			}
+			for (int i = 0; i < re_pamiec.size(); i++) 
+			{
+				celowania.setTraf(re_pamiec[i].first , re_pamiec[i].second);
+			}
+		}
+		return celowania;
 	}
-	void zabespiecz_strzal_gracz() {
+	
+	void zabespiecz_strzal_gracz()
+	{
 		
 		string kordy = "";
 		int x, y;
@@ -534,7 +553,6 @@ public:
 						else 
 						{
 							cout << "Liczba z przedzialu 1-10!"<<endl;
-
 						}
 					}
 					else 
@@ -552,13 +570,9 @@ public:
 		bool seria = 0;
 		do
 		{
+
 			zabespiecz_strzal_bot();
-
 			seria = bot_rezultat();
-
-
-
-
 
 		} while (seria == 1);
 	}
@@ -586,27 +600,29 @@ public:
 	{
 		int wynik;
 		wynik = gracz.check(strzal[0], strzal[1]);
+		
+		
+		Sleep(1000);
 		system("cls");
-		cout << "Bot strzela!" << " " << dekonwerter(strzal[1])  << strzal[0] << endl;
-		Sleep(1500);
 		if (wynik == 0)
 		{
 			gracz.setPudlo(strzal[0], strzal[1]);
 			
-			cout << "Bot pudluje!" << endl;
+			cout << "Bot strzela i pudluje!"<<" " << dekonwerter(strzal[1]) << strzal[0] << endl;
 			gracz.showplansza();
 			cout << endl;
 			pusta.showplansza();
 			return 0;
 		}
-		else {
+		else 
+		{
 
 			gracz.setTraf(strzal[0], strzal[1]);
-			
-			cout << "Bot trafia!" << endl;
+			cout << "Bot strzela i trafia!" <<" "<< dekonwerter(strzal[1]) << strzal[0]<<endl;
 			gracz.showplansza();
 			cout << endl;
 			pusta.showplansza();
+			Sleep(500);
 			return 1;
 
 		}
@@ -635,7 +651,11 @@ public:
 			system("cls");
 			
 			cout << "Trafiles!" << endl;
-			//check_zatoniecie(strzal[0], strzal[1]);
+			pusta=check_zatoniecie(strzal[0], strzal[1], pusta);
+			
+			
+				
+			
 			gracz.showplansza();
 			cout << endl;
 			pusta.showplansza();
@@ -681,12 +701,9 @@ public:
 	{
 		do 
 		{
-			gracz.showpamiec();
 			zabespiecz_strzal_gracz();
 			rezultat();
 		} while (gameover() == 0);
-
-
 	}
 };
 
