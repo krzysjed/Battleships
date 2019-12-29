@@ -4,7 +4,6 @@
 #include "string"
 #include <Windows.h>
 #include <random>
-#include <conio.h>
 #include <vector>
 
 
@@ -16,8 +15,7 @@ class mapa
 private:
 	vector<string>litery;
 	string Plansza[12][12];
-	int random;
-	
+	int random=0;
 	vector<vector<pair<int, int>>>pamiec;
 	
 public:
@@ -30,6 +28,11 @@ public:
 				Plansza[i][y] = "0";
 			}
 		}
+		set_vector_litery();
+	}
+
+	void set_vector_litery()
+	{
 		litery.push_back("Wypelniacz");
 		litery.push_back("A");
 		litery.push_back("B");
@@ -43,16 +46,17 @@ public:
 		litery.push_back("J");
 	}
 	
-	vector<pair<int, int>> re_pamiec(int i) {
+	vector<pair<int, int>> re_pamiec(int i) 
+	{
 		return pamiec[i];
-
 	}
 
-	vector<pair<int, int>> znajdz_w_pamieci(int x, int y) {
-		int numer_statku{};
-		for (int j = 0; j < pamiec.size(); j++)
+	vector<pair<int, int>> znajdz_w_pamieci(int x, int y) 
+	{
+		int numer_statku=0;
+		for (size_t j = 0; j < pamiec.size(); j++)
 		{
-			for (int i = 0; i < pamiec[j].size(); i++)
+			for (size_t i = 0; i < pamiec[j].size(); i++)
 			{
 
 				if (x == pamiec[j][i].first && y == pamiec[j][i].second)
@@ -61,49 +65,42 @@ public:
 				}
 			}
 		}
-	
-			return	 pamiec[numer_statku];
+		return	 pamiec[numer_statku];
 	}
 
 	void showpamiec() 
 	{
-		for (int j = 0; j < pamiec.size(); j++)
+		for (size_t j = 0; j < pamiec.size(); j++)
 		{
-			for (int i = 0; i < pamiec[j].size(); i++)
+			for (size_t i = 0; i < pamiec[j].size(); i++)
 			{
-
 				cout << pamiec[j][i].first;
 				cout << pamiec[j][i].second;
 				cout << endl;
-				
 			}
 		}
 	}
 
 	int get_rand2()
 	{
-
 		random_device rd;
 		std::mt19937 mt(rd());
 		std::uniform_int_distribution<std::mt19937::result_type> dist(0, 1);
-		//srand(rand());
 		return dist(mt);
-		//return rand() % 2;
 	}
+
 	int get_rand()
 	{
-
-		//srand(rand());
 		random_device rd;
 		std::mt19937 mt(rd());
 		std::uniform_int_distribution<std::mt19937::result_type> dist(1, 10);
-		//return  rand() % 10 + 1;
 		return dist(mt);
 	}
+
 	void set_lotniskowiec()
 	{
 		
-		vector<pair<int, int>>pamieclok;
+		vector<pair<int, int>> pamieclok;
 		bool t = false;
 		while (t == false)
 		{
@@ -135,6 +132,7 @@ public:
 			}
 		}
 	}
+
 	void set_pancernik_2()
 	{
 		int t4 = 0;
@@ -199,6 +197,7 @@ public:
 			}
 		}
 	}
+
 	void set_krazownik_2()
 	{
 	
@@ -332,15 +331,7 @@ public:
 			}
 		}
 	}
-	int rozmiar(int i, int j)
-	{
-		int k=0;
-		if (Plansza[i][j] == "L") { k = 6; }
-		if (Plansza[i][j] == "P") { k = 4; }
-		if (Plansza[i][j] == "K") { k = 3; }
-		if (Plansza[i][j] == "N") { k = 2; }
-		return k;
-	}
+
 	void showplansza()
 	{
 		cout << "X 1 2 3 4 5 6 7 8 9 10" << endl;
@@ -357,6 +348,7 @@ public:
 		}
 		cout << endl;
 	}
+
 	void setmapa() 
 	{
 		set_lotniskowiec();
@@ -382,46 +374,54 @@ public:
 		else
 			return 2;//traf
 	}
+
 	void setPudlo(int x, int y)
 	{
 
 		Plansza[x][y] = "*";
 	}
+
 	void setTraf(int x, int y) 
 	{
 
 		Plansza[x][y] = "X";
 	}
-	
-	string get_plansza(int i, int j)
-	{
-		return Plansza[i][j];
-	}
+
 };
 
 class gra {
-public:
+private:
+	
+	vector<pair<int, int>> strzal_bot;
+	bool znalazl = 0;
+	int polozenie = 2;//0 poziom 1 pion // 3 nieokreslono jeszcze
 	class mapa pustabot;
 	class mapa pusta;
 	class mapa gracz;
 	class mapa bot;
 	int strzal[1];
-	vector<pair<int, int>> strzal_bot;
-	bool znalazl = 0;
-	int polozenie = 2;//0 poziom 1 pion // 3 nieokreslono jeszcze
 
+public:
 
 	gra()
 	{
 		bot.setmapa();
 		gracz.setmapa();
-		bot.showplansza();
-		cout << endl;
 		gracz.showplansza();
-
+		cout << endl;
+		pusta.showplansza();
 		setvector();
-
+		zaladuj_strzal_gracz(0, 0);
 	}
+	int get_rand4()
+	{
+		random_device rd;
+		std::mt19937 mt(rd());
+		std::uniform_int_distribution<std::mt19937::result_type> dist(0, 3);
+		return dist(mt);
+	}
+
+
 	void setvector()
 	{
 		for (int i = 0; i < 4; i++) {
@@ -470,18 +470,37 @@ public:
 		}
 	}
 
-	bool check_zatoniecie_bot(int x, int y)
+	bool check_zatoniecie(int x, int y, int z = 0)//z to czy bot czy grcz////0 gracz//1 or sth bot
 	{
 		vector<pair<int, int>> re_pamiec;
 		int k = 1;
-		re_pamiec = gracz.znajdz_w_pamieci(x, y); // zapisane koordynaty topionego statku
+		if (z == 1) 
+		{
+			re_pamiec = gracz.znajdz_w_pamieci(x, y); // zapisane koordynaty topionego statku///
+		}
+		else
+		{
+			re_pamiec = bot.znajdz_w_pamieci(x, y); // zapisane koordynaty topionego statku///
+		}
 
-		for (int i = 0; i < re_pamiec.size(); i++)
+		for (size_t i = 0; i < re_pamiec.size(); i++)
 		{
 
-			if (pustabot.get_plansza(re_pamiec[i].first, re_pamiec[i].second) == "0")
+
+			if (z == 1) {
+
+
+				if (pustabot.check(re_pamiec[i].first, re_pamiec[i].second) == 0)
+				{
+					k = 0;
+				}
+			}
+			else
 			{
-				k = 0;
+				if (pusta.check(re_pamiec[i].first, re_pamiec[i].second) == 0)
+				{
+					k = 0;
+				}
 			}
 		}
 
@@ -497,117 +516,74 @@ public:
 
 			if (polozenie == 0) /////umieszcza pola wokol statku zniszczonego
 			{
-				for (int i = 0; i < re_pamiec.size(); i++)
+				for (size_t i = 0; i < re_pamiec.size(); i++)
 				{
 					for (int I = -1; I < 2; I++)
 					{
 						for (int j = -1; j < 2; j += 2)
-						{
-							pustabot.setPudlo(re_pamiec[i].first + I, re_pamiec[i].second + j);
-							gracz.setPudlo(re_pamiec[i].first + I, re_pamiec[i].second + j);
+						{	
+							if (z == 1) 
+							{
+								pustabot.setPudlo(re_pamiec[i].first + I, re_pamiec[i].second + j);
+								gracz.setPudlo(re_pamiec[i].first + I, re_pamiec[i].second + j);
+							}
+							else 
+							{
+								pusta.setPudlo(re_pamiec[i].first + I, re_pamiec[i].second + j);
+							}
 						}
 					}
 				}
 			}
 			else {
-				for (int i = 0; i < re_pamiec.size(); i++)
+				for (size_t i = 0; i < re_pamiec.size(); i++)
 				{
 					for (int I = -1; I < 2; I++)
 					{
 						for (int j = -1; j < 2; j += 2)
 						{
-							pustabot.setPudlo(re_pamiec[i].first + j, re_pamiec[i].second + I);
-							gracz.setPudlo(re_pamiec[i].first + j, re_pamiec[i].second + I);
+							if (z == 1)
+							{
+								pustabot.setPudlo(re_pamiec[i].first + j, re_pamiec[i].second + I);
+								gracz.setPudlo(re_pamiec[i].first + j, re_pamiec[i].second + I);
+							}
+							else 
+							{
+								pusta.setPudlo(re_pamiec[i].first + j, re_pamiec[i].second + I);
+							}
 						}
 					}
 				}
 			}
-			for (int k = 0; k < re_pamiec.size(); k++)///dodatkowo u gracza
+			for (size_t k = 0; k < re_pamiec.size(); k++)///dodatkowo u gracza
 			{
-				pustabot.setTraf(re_pamiec[k].first, re_pamiec[k].second);
-				gracz.setTraf(re_pamiec[k].first, re_pamiec[k].second);
+				if (z == 1)
+				{
+					pustabot.setTraf(re_pamiec[k].first, re_pamiec[k].second);
+					gracz.setTraf(re_pamiec[k].first, re_pamiec[k].second);
+				}
+				else 
+				{
+					pusta.setTraf(re_pamiec[k].first, re_pamiec[k].second);
+				}
 			}
 		}
 		return k;
 	}
 
-
-
-	mapa check_zatoniecie(int x, int y, mapa celowania)
-	{
-		vector<pair<int, int>> re_pamiec;
-
-		re_pamiec = bot.znajdz_w_pamieci(x, y); // zapisane koordynaty topionego statku
-		
-		int k = 1;
-
-		for (int i = 0; i < re_pamiec.size(); i++)
-		{
-			if (celowania.get_plansza(re_pamiec[i].first, re_pamiec[i].second) == "0")
-			{
-				k = 0;
-			}
-		}
-		if (k == 1)
-		{
-			bool polozenie;
-			cout << "Zatopiony!" << endl;
-
-			if (re_pamiec[0].first == re_pamiec[1].first)
-			{
-				polozenie = 0;//pion
-			}
-			else { polozenie = 1; }//poziomo
-
-			if (polozenie == 0) /////umieszcza pola wokol statku zniszczonego
-			{
-				for (int i = 0; i < re_pamiec.size(); i++)
-				{
-					for (int I = -1; I < 2; I++)
-					{
-						for (int j = -1; j < 2; j += 2)
-						{
-							celowania.setPudlo(re_pamiec[i].first + I, re_pamiec[i].second + j);
-						}
-					}
-				}
-			}
-			else {
-				for (int i = 0; i < re_pamiec.size(); i++)
-				{
-					for (int I = -1; I < 2; I++)
-					{
-						for (int j = -1; j < 2; j += 2)
-						{
-							celowania.setPudlo(re_pamiec[i].first + j, re_pamiec[i].second + I);
-						}
-					}
-				}
-			}
-			for (int i = 0; i < re_pamiec.size(); i++)
-			{
-				celowania.setTraf(re_pamiec[i].first, re_pamiec[i].second);
-			}
-		}
-
-		return celowania;
-	}
-
 	void zabespiecz_strzal_gracz()
 	{
-
 		string kordy = "";
 		int x, y;
-		bool t = 0;
+		bool t;
 		do
 		{
 			t = 0;
-			string kordy = "";
-			string n = "";
 			do
 			{
 				do
 				{
+					kordy = "";
 					cout << " Podaj wspolrzedne.Wzor(A1/J10). " << endl;
 					cin >> kordy;
 				} while (kordy.length() == 1 || kordy.length() > 3);
@@ -616,18 +592,20 @@ public:
 				y = konwenter(litera);
 
 			} while (y > 10 || y < 1);
+			string n="";
+			string n1 = "";
+			n=(kordy[1]);//cyfra musi byc 
+			n1=(kordy[2]);///TRZECIA SLOT CZYLI TYLKO 0
 
-			n.push_back(kordy[1]);
-			n.push_back(kordy[2]);
-
-			if (isdigit(n[0]) && (isdigit(n[1]) || n.length() < 3))
+			if (isdigit(n[0]) && (isdigit(n1[0]) || n.length()+n1.length() < 3))
 			{
-				x = stoi(n);
+				x = stoi(n+n1);
 
 				if (x > 0 && x < 11)
 				{
 					if (pusta.check(x, y) == 0 || pusta.check(x, y) == 2)//bez powtarzania
 					{
+						cout << x << y;
 						t = 1;
 					}
 					else
@@ -646,16 +624,17 @@ public:
 			}
 		} while (t == 0);
 
+		zaladuj_strzal_gracz(x, y);
+		
+	}
+	void zaladuj_strzal_gracz(int x, int y) {
+
 		strzal[0] = x;
 		strzal[1] = y;
 	}
 
-
-	
-
 	int namierzanie_celu() 
 	{
-		srand(time(NULL));
 		int x, y,z;
 		bool t = 0;
 		
@@ -668,7 +647,7 @@ public:
 			x = strzal_bot[0].first;
 			y = strzal_bot[0].second;
 			
-			z = rand() % 4;
+			z = get_rand4();
 			if (z == 0) 
 			{
 				y++;
@@ -694,27 +673,17 @@ public:
 				}
 			}
 		} while (t == 0);///dotad wylosowal niestrzelone miejsce w okol celu juz trafionego
-		//dotad namierzanoe
-	
 		
 		if (gracz.check(x, y) == 0) 
 		{
-			cout << "Bot spudlowal!! "<<dekonwerter(y)<< x<<endl;
-			gracz.setPudlo(x, y);
-			pustabot.setPudlo(x, y);
-			gracz.showplansza();
-			cout << endl;
-			pusta.showplansza();
+			bot_komunikat_pudlo(x, y);
 			return(0);
 		}
 		else 
 		{
 			strzal_bot[1].first=x;
 			strzal_bot[1].second=y;
-			cout << strzal_bot[1].first << " DRUGI STRZAL PO USTAWIENIU " << strzal_bot[1].second;
-			cout << "Bot trafil!!! " << dekonwerter(y) << x << endl;
-			gracz.setTraf(x, y);
-			pustabot.setTraf(x, y);
+
 			if (strzal_bot[0].first == strzal_bot[1].first)
 			{
 				//pionowo
@@ -722,20 +691,44 @@ public:
 
 			}
 			else { polozenie = 0; }
-
-
-			if (check_zatoniecie_bot(x, y) == 1) //IF ZATOPIONE
-			{
-				polozenie = 2;//nieokreslone
-				znalazl = 0;//zapomina o statku
-				cleanvector();
-			}
-			gracz.showplansza();
-			cout << endl;
-			pusta.showplansza();
+		
+			bot_komunikat_traf(x,y);
+			
 			return(1);
 		}
 	}
+	void bot_komunikat_pudlo(int x, int y)
+	{
+		Sleep(1000);
+		cout << "BOT STRZELA I PUDLUJE! " << dekonwerter(y) << x << endl<<endl;
+		gracz.setPudlo(x, y);
+		pustabot.setPudlo(x, y);
+
+		gracz.showplansza();
+		
+		pusta.showplansza();
+		cout  << "######################################################################" << endl<<endl;
+	}
+	void bot_komunikat_traf(int x, int y)
+	{
+		Sleep(1000);
+		cout << "BOT STRZELA I TRAFIA! " << dekonwerter(y) << x << endl<<endl;
+		gracz.setTraf(x, y);
+		pustabot.setTraf(x, y);
+
+		if (check_zatoniecie(x, y, 1) == 1) //IF ZATOPIONE
+		{
+			polozenie = 2;//nieokreslone
+			znalazl = 0;//zapomina o statku
+			cleanvector();
+		}
+		gracz.showplansza();
+		
+		pusta.showplansza();
+		cout <<"######################################################################" << endl<<endl;
+	}
+
+
 	int szukanie_celu_odejmowanie_dodawanie(int Q=1)//Q1 DODAWNIE // odejmowanie cokolwiek innego 
 	{
 		int x, y,d, c = 0, checkbot, fd = 0;
@@ -783,19 +776,22 @@ public:
 				{
 					return(2);
 				}
+				else {
+					fd = 0;
+				}
 			}
 			else //zmienaimy kierunek jest po za skala
 			{
 				return(2);
 			}
 		} while (fd == 0);//kolejno dodaje chodzac po x juz wystukanych
+		return(1);
 	}
 
 	
 	void strzelanie_seria() 
 	{
-		int losowo,x, y, c = 0,checkbot, fd=0;
-		bool ff;
+		int losowo, c = 0, fd=0;
 		losowo=gracz.get_rand2();
 		do {
 			if (losowo == 0)//dodaje
@@ -829,31 +825,34 @@ public:
 		bool seria = 0;
 		do
 		{
-			if (znalazl == 0)///strzela na oslep
+			
+			if (checkGAMEOVER(pustabot) == 0)/// jesli bot juz wygral to sie nie uruchamia
 			{
-				cout << "sru na oslep" << endl;
-				zabespiecz_strzal_bot();
-				seria = bot_rezultat();
+				if (znalazl == 0)///strzela na oslep
+				{
 				
+					zabespiecz_strzal_bot();
+					seria = bot_rezultat();
+
+				}
+				else ///gdy znalazl cel
+				{
+			
+					if (polozenie == 2)//jeszcze polozenie nie okreslil
+					{
+						seria = namierzanie_celu();//szuka wokol strzelone miejsca statek
+					}
+					else
+					{
+						
+						strzelanie_seria();//znajduje pole do strzelenia obok tego juz strzeloneo
+						seria = bot_rezultat(3);
+					}
+				}
 			}
-			else ///gdy znalazl cel
+			else 
 			{
-				cout << polozenie << endl;///////////////////////////////////////////
-				if (polozenie == 2)//jeszcze polozenie nie okreslil
-				{
-					cout << "CELOWANIE" << endl;
-					seria = namierzanie_celu();//szuka wokol strzelone miejsca statek
-
-				}
-				else
-				{
-					cout << "Special" << endl;
-					strzelanie_seria();//znajduje pole do strzelenia obok tego juz strzeloneo
-					seria = bot_rezultat(3);
-				
-				}
-
-
+				seria = 0;
 			}
 		} while (seria == 1);
 	}
@@ -886,37 +885,17 @@ public:
 		
 		if (wynik == 0)
 		{
-			pustabot.setPudlo(x, y);
-			gracz.setPudlo(x, y);
-			cout << "Bot strzela i pudluje!"<< " " << dekonwerter(y) << x << endl;
-			gracz.showplansza();
-			cout << endl;
-			pusta.showplansza();
+			bot_komunikat_pudlo(x, y);
 			return 0;
 		}
 		else 
 		{
-			znalazl = 1;//znajduje statek
-			pustabot.setTraf(x, y);
-			gracz.setTraf(x, y);
-			cout << "Bot strzela i trafia!!!" <<" "<< dekonwerter(y) << x<<endl;
-
-			if (check_zatoniecie_bot(x, y) == 1) //IF ZATOPIONE
-			{
-				polozenie = 2;//nieokreslone
-				znalazl = 0;//zapomina o statku
-				cleanvector();
-			}
-
-			gracz.showplansza();
-			cout << endl;
-			pusta.showplansza();
-			Sleep(500);
+			bot_komunikat_traf(x, y);
 			return 1;
 		}
 	}
 
-	void rezultat() 
+	int rezultat() 
 	{
 		int wynik;
 		wynik = bot.check(strzal[0], strzal[1]);
@@ -924,26 +903,26 @@ public:
 		{
 			pusta.setPudlo(strzal[0], strzal[1]);
 			system("cls");
-			cout << "Spudlowales!" << endl<<endl;
+			cout << "SPUDLOWALES! " << dekonwerter(strzal[1]) << strzal[0]<< endl<<endl;
 			gracz.showplansza();
 			cout << endl;
 			pusta.showplansza();
-			
-			botlogic();//bot zaczyna 
+			cout << "######################################################################" << endl << endl;
+			return 0;
 
 		}
 		else 
 		{
-
 			pusta.setTraf(strzal[0], strzal[1]);
 			system("cls");
-			cout << "Trafiles!" << endl<<endl;
+			cout << "TRAFILES! "<<dekonwerter(strzal[1])<<strzal[0] << endl<<endl;
 			
-			pusta=check_zatoniecie(strzal[0], strzal[1], pusta);
+			check_zatoniecie(strzal[0], strzal[1],0);
 			gracz.showplansza();
 			cout << endl;
 			pusta.showplansza();
-
+			cout << "######################################################################" << endl << endl;
+			return 1;
 		}
 	}
 	bool checkGAMEOVER(mapa X)
@@ -953,7 +932,7 @@ public:
 		{
 			for (int j = 1; j < 11; j++)
 			{
-				if (X.get_plansza(i, j) == "X")
+				if (X.check(i, j) == 3)
 				{
 				 k++;
 				}
@@ -983,18 +962,28 @@ public:
 	
 	void przebieg_gry()
 	{
-		do 
+		do
 		{
-			zabespiecz_strzal_gracz();
-			rezultat();
+			bool seria = 1;
+			do
+			{
+				zabespiecz_strzal_gracz();
+				seria = rezultat();
 
-		} while (gameover() == 0);
-	}////////////DOROB GAME OVER DLA BOTA ABY ODRAZU WCHODZIL
+			} while (seria == 1 && checkGAMEOVER(pusta) == 0);///sprawdza gameover aby podczas seri nie walnac jeszcze na slepo
+
+			if (checkGAMEOVER(pusta) == 0)/// jesli juz gracz wygral to sie nie uruchamia
+			{
+			botlogic();
+			}
+		}while (gameover() == 0);
+	}
 };
 
 int main()
 {
 	gra x;
+	x.przebieg_gry();
 	x.przebieg_gry();
 	return 0;
 }
