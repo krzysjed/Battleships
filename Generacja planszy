@@ -22,8 +22,8 @@ public:
 
 	mapa()
 	{
-		for (int i = 0; i < 12; i++) {
-			for (int y = 0; y < 12; y++) {
+		for (int i = 0; i < 11; i++) {
+			for (int y = 0; y < 11; y++) {
 
 				Plansza[i][y] = "0";
 			}
@@ -637,7 +637,6 @@ public:
 	{
 		int x, y,z;
 		bool t = 0;
-		
 
 		x=strzal_bot[0].first;
 		y=strzal_bot[0].second;
@@ -715,7 +714,7 @@ public:
 		cout << "BOT STRZELA I TRAFIA! " << dekonwerter(y) << x << endl<<endl;
 		gracz.setTraf(x, y);
 		pustabot.setTraf(x, y);
-
+		znalazl = 1;
 		if (check_zatoniecie(x, y, 1) == 1) //IF ZATOPIONE
 		{
 			polozenie = 2;//nieokreslone
@@ -822,15 +821,14 @@ public:
 
 	void botlogic()
 	{
+	
 		bool seria = 0;
 		do
 		{
-			
 			if (checkGAMEOVER(pustabot) == 0)/// jesli bot juz wygral to sie nie uruchamia
 			{
 				if (znalazl == 0)///strzela na oslep
 				{
-				
 					zabespiecz_strzal_bot();
 					seria = bot_rezultat();
 
@@ -844,7 +842,6 @@ public:
 					}
 					else
 					{
-						
 						strzelanie_seria();//znajduje pole do strzelenia obok tego juz strzeloneo
 						seria = bot_rezultat(3);
 					}
@@ -855,6 +852,51 @@ public:
 				seria = 0;
 			}
 		} while (seria == 1);
+	}
+	int sasiedstwo(int x, int y)
+	{
+		int i = 0;
+
+		if(pustabot.check(x+1, y) == 0) { i++; }
+		if (pustabot.check(x -1, y) == 0) { i++; }
+		if (pustabot.check(x , y-1) == 0) { i++; }
+		if (pustabot.check(x , y+1) == 0) { i++; }
+
+		return i;
+	}
+	int bot_blokada_strzelnia(int x,int y) 
+	{
+		
+		if (pustabot.check(x, y) == 0) 
+		{
+			if((x==1&&y==1)|| (x == 1 && y == 10)|| (x == 10 && y == 1)|| (x == 10 && y == 10))//krawedzie planszy
+			{
+				if (sasiedstwo(x, y) == 3 || sasiedstwo(x, y) == 4) {
+					return 1;
+				}
+				else 
+					return 0;
+			
+			}
+			if ((x == 1 ||x==10)||((y==1||y==10))) // boki planszy
+			{
+				if (sasiedstwo(x, y) == 3 || sasiedstwo(x, y) == 4 || sasiedstwo(x, y) == 2) {
+					return 1;
+				}
+				else
+					return 0;
+			}
+			else
+			{
+				if (sasiedstwo(x, y) > 0) {//srodek planszy
+					return 1;
+				}
+				else 
+					return 0;
+			}
+		}
+		else
+			return 1;
 	}
 
 	void zabespiecz_strzal_bot() 
@@ -868,7 +910,7 @@ public:
 			
 			if (pustabot.check(x, y) == 0 || pustabot.check(x, y)==2)// sprawdza w swojej planszy
 			{
-				t = 1;
+				t = bot_blokada_strzelnia(x, y);
 			}
 			
 		} while (t == 0);
@@ -907,7 +949,7 @@ public:
 			gracz.showplansza();
 			cout << endl;
 			pusta.showplansza();
-			cout << "######################################################################" << endl << endl;
+			cout << "######################################################################" << endl;
 			return 0;
 
 		}
@@ -921,7 +963,7 @@ public:
 			gracz.showplansza();
 			cout << endl;
 			pusta.showplansza();
-			cout << "######################################################################" << endl << endl;
+			cout << "######################################################################" << endl;
 			return 1;
 		}
 	}
@@ -969,6 +1011,7 @@ public:
 			{
 				zabespiecz_strzal_gracz();
 				seria = rezultat();
+				
 
 			} while (seria == 1 && checkGAMEOVER(pusta) == 0);///sprawdza gameover aby podczas seri nie walnac jeszcze na slepo
 
@@ -984,7 +1027,9 @@ int main()
 {
 	gra x;
 	x.przebieg_gry();
-	x.przebieg_gry();
+
 	return 0;
 }
+
+
 
