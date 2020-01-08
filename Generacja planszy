@@ -15,15 +15,14 @@ class mapa
 private:
 	vector<string>litery;
 	string Plansza[12][12];
-	int random=0;
 	vector<vector<pair<int, int>>>pamiec;
 	
 public:
 
-	mapa()
+	mapa()// ustawia plansze pelna 0
 	{
-		for (int i = 0; i < 11; i++) {
-			for (int y = 0; y < 11; y++) {
+		for (int i = 0; i < 12; i++) {
+			for (int y = 0; y < 12; y++) {
 
 				Plansza[i][y] = "0";
 			}
@@ -31,7 +30,7 @@ public:
 		set_vector_litery();
 	}
 
-	void set_vector_litery()
+	void set_vector_litery()// uzywane do obramowki // design
 	{
 		litery.push_back("Wypelniacz");
 		litery.push_back("A");
@@ -51,6 +50,40 @@ public:
 		return pamiec[i];
 	}
 
+	string dekonwerter(int x)//mowi graczowi gdzie bot strzelil konwertujac cyfre na litere
+	{
+		if (x == 1) { return "A"; }
+		if (x == 2) { return "B"; }
+		if (x == 3) { return "C"; }
+		if (x == 4) { return "D"; }
+		if (x == 5) { return "E"; }
+		if (x == 6) { return "F"; }
+		if (x == 7) { return "G"; }
+		if (x == 8) { return "H"; }
+		if (x == 9) { return "I"; }
+		if (x == 10) { return "J"; }
+		else return"BLAD!";
+	}
+
+	int konwenter(string x) // konwertuje litere na cyfre (wspolrzedne)
+	{
+		if (x == "A") { return 1; }
+		if (x == "B") { return 2; }
+		if (x == "C") { return 3; }
+		if (x == "D") { return 4; }
+		if (x == "E") { return 5; }
+		if (x == "F") { return 6; }
+		if (x == "G") { return 7; }
+		if (x == "H") { return 8; }
+		if (x == "I") { return 9; }
+		if (x == "J") { return 10; }
+		else
+		{
+			cout << "Litery od A-J" << endl;
+			return 69;
+		}
+	}
+
 	vector<pair<int, int>> znajdz_w_pamieci(int x, int y) 
 	{
 		int numer_statku=0;
@@ -68,7 +101,7 @@ public:
 		return	 pamiec[numer_statku];
 	}
 
-	void showpamiec() 
+	void showpamiec() /// metoda do uzytku programisty// debagowanie
 	{
 		for (size_t j = 0; j < pamiec.size(); j++)
 		{
@@ -97,279 +130,19 @@ public:
 		return dist(mt);
 	}
 
-	void set_lotniskowiec()
-	{
-		
-		vector<pair<int, int>> pamieclok;
-		bool t = false;
-		while (t == false)
-		{
-			int tryb6,x,y;
-			 tryb6 = get_rand2();
-			 
-
-			 x = get_rand();
-			 y = get_rand();
-
-			
-			if (tryb6 == 0 && x < 6) {
-				for (int para = 0; para < 6; para++) 
-				{
-					Plansza[x+para][y] = "L";
-					pamieclok.push_back(make_pair(x+para, y));
-				}
-				pamiec.push_back(pamieclok);
-				t = true;
-			}
-			if (tryb6 == 1 && y < 6)
-			{
-				for (int para = 0; para < 6; para++) {
-					Plansza[x][y + para] = "L";
-					pamieclok.push_back(make_pair(x, y + para));
-				}
-				pamiec.push_back(pamieclok);
-				t = true;
-			}
-		}
-	}
-
-	void set_pancernik_2()
-	{
-		int t4 = 0;
-		while (t4 < 2)
-		{
-			vector<pair<int, int>>pamieclok;
-			int tryb4 = get_rand2();
-			int x = get_rand();
-			int y = get_rand();
-			bool CHECK = true;
-			int i = x;
-			int j = y;
-
-			if (tryb4 == 0) {///check zderzenie;
-				for (i = x - 1; i <= x + 4; i++)
-				{
-					for (j = y - 1; j <= y + 1; j++) {
-
-
-						if (Plansza[i][j] != "0")///tu cos
-						{
-							CHECK = false;
-
-						}
-					}
-				}
-			}
-			else 
-			{
-				for (i = x - 1; i <= x + 1; i++)
-				{
-					for (j = y - 1; j <= y + 4; j++) {
-
-
-						if (Plansza[i][j] != "0")
-						{
-							CHECK = false;
-						}
-					}
-				}
-			}
-
-			if (tryb4 == 0 && x < 8 && CHECK == true)
-			{
-				for (int para = 0; para < 4; para++)
-				{	
-					Plansza[x+para][y] = "P";
-					pamieclok.push_back(make_pair(x+para, y));
-				}
-				pamiec.push_back(pamieclok);
-				t4++;
-			}
-			if (tryb4 == 1 && y < 8 && CHECK == true)
-			{
-				for (int para = 0; para < 4; para++) 
-				{
-					Plansza[x][y+para] = "P";
-					pamieclok.push_back(make_pair(x, y + para));
-				}
-				pamiec.push_back(pamieclok);
-				t4++;
-			}
-		}
-	}
-
-	void set_krazownik_2()
-	{
-	
-		int t3 = 0;
-		while (t3 < 2)
-		{
-			vector<pair<int, int>>pamieclok;
-			int tryb3 = get_rand2();
-			int x = get_rand();
-			int y = get_rand();
-
-			bool CHECK = true;
-			int i = x;
-			int j = y;
-
-			if (tryb3 == 0) {///check zderzenie;
-				for (i = x - 1; i <= x + 3; i++)
-				{
-					for (j = y - 1; j <= y + 1; j++) {
-
-
-						if (Plansza[i][j] != "0")
-						{
-							CHECK = false;
-
-						}
-					}
-				}
-			}
-			else 
-			{
-				for (i = x - 1; i <= x + 1; i++)
-				{
-					for (j = y - 1; j <= y + 3; j++) {
-
-
-						if (Plansza[i][j] != "0")
-						{
-							CHECK = false;
-
-						}
-					}
-				}
-			}
-
-			if (tryb3 == 0 && x < 9 && CHECK == true)
-			{
-				for (int para = 0; para < 3; para++) 
-				{
-					Plansza[x+para][y] = "K";
-					pamieclok.push_back(make_pair(x+para, y ));
-				}
-				pamiec.push_back(pamieclok);
-				t3++;
-			}
-			if (tryb3 == 1 && y < 9 && CHECK == true)
-			{
-				for (int para = 0; para < 3; para++) 
-				{
-				Plansza[x][y+para] = "K";
-				pamieclok.push_back(make_pair(x, y + para));
-				}
-				pamiec.push_back(pamieclok);
-				t3++;
-			}
-		}
-	}
-
-	void set_niszczyciel_2()
-	{
-		
-		int t2 = 0;
-		while (t2 < 2)
-		{
-			vector<pair<int, int>>pamieclok;
-			int tryb2 = get_rand2();
-			int x = get_rand();
-			int y = get_rand();
-
-			bool CHECK = true;
-			int i = x;
-			int j = y;
-
-			if (tryb2 == 0) {///check zderzenie;
-				for (i = x - 1; i <= x + 2; i++)
-				{
-					for (j = y - 1; j <= y + 1; j++) {
-
-
-						if (Plansza[i][j] != "0")
-						{
-							CHECK = false;
-
-						}
-					}
-				}
-			}
-			else {
-				for (i = x - 1; i <= x + 1; i++)
-				{
-					for (j = y - 1; j <= y + 2; j++) {
-
-
-						if (Plansza[i][j] != "0")
-						{
-							CHECK = false;
-
-						}
-					}
-				}
-			}
-			if (tryb2 == 0 && x < 10 && CHECK == true)
-			{
-				for (int para = 0; para < 2; para++) {
-				Plansza[x+para][y] = "N";
-				pamieclok.push_back(make_pair(x + para, y));
-				}
-				pamiec.push_back(pamieclok);
-				t2++;
-			}
-			if (tryb2 == 1 && y < 10 && CHECK == true)
-			{
-				for (int para = 0; para < 2; para++) 
-				{
-				Plansza[x][y+para] = "N";
-				pamieclok.push_back(make_pair(x, y + para));
-				}
-
-				pamiec.push_back(pamieclok);
-				t2++;
-			}
-		}
-	}
-
-	void showplansza()
-	{
-		cout << "X 1 2 3 4 5 6 7 8 9 10" << endl;
-		
-		for (int i = 1; i < 11; i++)
-		{
-			cout << litery[i] << " ";
-			for (int y = 1; y < 11; y++) 
-			{
-				cout << Plansza[y][i];
-				cout << " ";
-			}
-			cout << endl;
-		}
-		cout << endl;
-	}
-
-	void setmapa() 
-	{
-		set_lotniskowiec();
-		set_pancernik_2();
-		set_krazownik_2();
-		set_niszczyciel_2();
-	}
-	
 	int check(int x, int y)
 	{
-		if (Plansza[x][y] == "0") 
+		if (Plansza[x][y] == "0")
 		{
 			return 0;// pudlo//puste pole
 		}
 		if (Plansza[x][y] == "X")//juz trafione 
 		{
-		return 3; ///juztrafione
+			return 3; ///juztrafione
 		}
-		if(Plansza[x][y] == "*" )
+		if (Plansza[x][y] == "*")
 		{
-		return 1;// niedozwolone powtarzanie strzalow//puste
+			return 1;// niedozwolone powtarzanie strzalow//puste
 		}
 		else
 			return 2;//traf
@@ -381,15 +154,279 @@ public:
 		Plansza[x][y] = "*";
 	}
 
-	void setTraf(int x, int y) 
+	void setTraf(int x, int y)
 	{
 
 		Plansza[x][y] = "X";
 	}
 
+	void showplansza()
+	{
+		cout << "X 1 2 3 4 5 6 7 8 9 10" << endl;
+
+		for (int i = 1; i < 11; i++)
+		{
+			cout << litery[i] << " ";
+			for (int y = 1; y < 11; y++)
+			{
+				cout << Plansza[y][i];
+				cout << " ";
+			}
+			cout << endl;
+		}
+		cout << endl;
+	}
+
+	void set_rand_mapa() //Procedura rozpoczecia losowanania mapy
+	{
+		losowanie(6);
+		losowanie(4);
+		losowanie(4);
+		losowanie(3);
+		losowanie(3);
+		losowanie(2);
+		losowanie(2);
+
+	}
+
+	void losowanie(int rozmiar){
+	
+		int good = 0;
+		do
+		{
+			int p = get_rand2();///pozycja los 
+			int x = get_rand();/// x los (1-10)
+			int y = get_rand();///y los (1-10)
+
+			good = rozmieszczanie_statkow(x, y, p, rozmiar);
+			
+		} while (good == 0);
+	
+	}
+
+	void statek(int rozmiar) 
+	{
+		if (rozmiar == 6) {	cout << " Tworzenie Lotniskowiec 1x6 ";}
+		if (rozmiar == 4) { cout << " Tworzenie Pancernik 1x4 " ; }
+		if (rozmiar == 3) { cout << " Tworzenie Krazownik 1x3"; }
+		if (rozmiar == 2) { cout << " Tworzenie Niszczyciel 1x2"; }
+	}
+
+	void wybierz_literke(int x,int y,int para ,int rozmiar,int p) // ustawia statki wedlug kryteriow
+	{
+		if (p == 0) {
+			if (rozmiar == 6)
+			{
+				Plansza[x + para][y] = "L";
+			}
+			if (rozmiar == 4) {
+				Plansza[x + para][y] = "P";
+			}
+			if (rozmiar == 3) {
+				Plansza[x + para][y] = "K";
+			}
+			if (rozmiar == 2) {
+				Plansza[x + para][y] = "N";
+			}
+		}
+		else {
+			if (rozmiar == 6)
+			{
+				Plansza[x][y+para] = "L";
+			}
+			if (rozmiar == 4) {
+				Plansza[x][y+ para] = "P";
+			}
+			if (rozmiar == 3) {
+				Plansza[x ][y+ para] = "K";
+			}
+			if (rozmiar == 2) {
+				Plansza[x][y+ para] = "N";
+			}
+		}
+	}
+
+
+	int rozmieszczanie_statkow(int x, int y, int p, int r) /// zabespieczenie przed stykaniem // i wyjsciem po za mape 
+	{
+		vector<pair<int, int>>pamieclok;
+		int i = x;
+		int j = y;
+		bool CHECK=true;
+
+		if (p == 0) 
+		{
+			for (i = x - 1; i <= x + r; i++)
+			{
+				for (j = y - 1; j <= y + 1; j++) {
+
+
+					if (Plansza[i][j] != "0")
+					{
+						CHECK = false;
+
+					}
+				}
+			}
+			
+		}
+		else
+		{
+			for (i = x - 1; i <= x + 1; i++)
+			{
+				for (j = y - 1; j <= y + r; j++) {
+
+
+					if (Plansza[i][j] != "0")
+					{
+						
+						CHECK = false;
+						
+					}
+				}
+			}
+		}
+		
+		if (p == 0 && x < 12-r && CHECK == true)
+		{
+			for (int para = 0; para < r; para++) {
+				wybierz_literke( x,  y,  para,  r,p);
+				
+
+				pamieclok.push_back(make_pair(x + para, y));
+			}
+			pamiec.push_back(pamieclok);
+		}
+		if (p == 1 && y < 12-r && CHECK == true)
+		{
+			for (int para = 0; para < r; para++)
+			{
+				wybierz_literke(x, y, para, r,p);/// RYSUJE NA MAPIE
+				pamieclok.push_back(make_pair(x, y + para));/// ZAPISUJE W PAMIECI KOORDYNATY
+			}
+
+			pamiec.push_back(pamieclok);
+		}
+		if ((y >= 12 - r && p == 1) || (x >= 12 - r&& p==0)) //////WARUNEK ABY NIE WYJECHAC PO ZA PLANSZE
+		{
+			CHECK = 0;
+		}
+
+		if (CHECK == 0) 
+		{
+		
+			return 0;
+		}
+		else
+			return 1;
+
+	}
+
+	void zabespieczenie_tworzenie(int rozmiar)// zabespiecznie anty... przy wpisywaniu koordynatow gracza
+	{
+		int good,good2;
+		string polozenie="";
+		string kordy = "";
+		int p,x, y;
+		bool t;
+
+		do 
+		{
+			do
+			{
+				t = 0;
+				do
+				{
+					do
+					{
+						kordy = "";
+						cout << " Podaj wspolrzedne.Wzor(A1/J10) ";
+						statek(rozmiar);
+						cout << endl;
+						cin >> kordy;
+					} while (kordy.length() == 1 || kordy.length() > 3);
+					string litera;
+					litera = kordy[0];
+					y = konwenter(litera);
+
+				} while (y > 10 || y < 1);
+				string n = "";
+				string n1 = "";
+				n = (kordy[1]);//cyfra musi byc 
+				n1 = (kordy[2]);///TRZECIA SLOT CZYLI TYLKO 0
+
+				if (isdigit(n[0]) && (isdigit(n1[0]) || n.length() + n1.length() < 3))
+				{
+					x = stoi(n + n1);
+
+					if (x > 0 && x < 11)
+					{
+						if (check(x, y) == 0 )
+						{
+							
+							t = 1;
+						}
+						else
+						{
+							cout << "Nie mozesz to same wybierac!" << endl;
+						}
+					}
+					else
+					{
+						cout << "Liczba z przedzialu 1-10!" << endl;
+					}
+				}
+				else
+				{
+					cout << "Prosze tez liczbe podac! np A1" << endl;
+				}
+			} while (t == 0);
+			
+			do
+			{
+				cout << "Poziomo czy Pionowo statek umiescic? Wybierz odpowiednio PO / PI ! " << endl;
+				cin >> polozenie;
+				if (polozenie == "PO" || polozenie == "PI")
+				{
+
+					if (polozenie == "PO")
+					{
+						p = 0;
+					}
+					else
+					{
+						p = 1;
+					}
+					good = 1;
+				}
+				else {
+					good = 0;
+				}
+			} while (good == 0);
+
+			good2= rozmieszczanie_statkow(x, y, p,rozmiar);
+			if (good2 == 0) {
+				cout << "Wyszedles po za zakres!" << endl;
+			}
+		} while (good2 == 0);
+		
+		showplansza();
+	}
+
+	void Tworzenie_gracz()// reczne wpowadzanie statkow o okreslonych wielkosciach
+	{
+		zabespieczenie_tworzenie(6);
+		zabespieczenie_tworzenie(4);
+		zabespieczenie_tworzenie(4);
+		zabespieczenie_tworzenie(3);
+		zabespieczenie_tworzenie(3);
+		zabespieczenie_tworzenie(2);
+		zabespieczenie_tworzenie(2);
+	}
 };
 
-class gra {
+class gra 
+{
 private:
 	
 	vector<pair<int, int>> strzal_bot;
@@ -405,9 +442,23 @@ public:
 
 	gra()
 	{
-		bot.setmapa();
-		gracz.setmapa();
+		string wybor;
+		cout << "Jesli chcesz wygenerowac swoja plansze losowo ... wpisz LOS jesli nie wpisz cokolwiek " << endl;
+		cin >> wybor;
+		system("cls");
+		if (wybor == "LOS") 
+		{
+			gracz.set_rand_mapa();
+		}
+		else {
+			gracz.showplansza();
+			gracz.Tworzenie_gracz();
+		}
+		system("cls");
+		
+		
 		gracz.showplansza();
+		bot.set_rand_mapa();
 		cout << endl;
 		pusta.showplansza();
 		setvector();
@@ -437,40 +488,8 @@ public:
 
 	}
 
-	string dekonwerter(int x)
-	{
-		if (x == 1) { return "A"; }
-		if (x == 2) { return "B"; }
-		if (x == 3) { return "C"; }
-		if (x == 4) { return "D"; }
-		if (x == 5) { return "E"; }
-		if (x == 6) { return "F"; }
-		if (x == 7) { return "G"; }
-		if (x == 8) { return "H"; }
-		if (x == 9) { return "I"; }
-		if (x == 10) { return "J"; }
-		else return"BLAD!";
-	}
 
-	int konwenter(string x) {
-		if (x == "A") { return 1; }
-		if (x == "B") { return 2; }
-		if (x == "C") { return 3; }
-		if (x == "D") { return 4; }
-		if (x == "E") { return 5; }
-		if (x == "F") { return 6; }
-		if (x == "G") { return 7; }
-		if (x == "H") { return 8; }
-		if (x == "I") { return 9; }
-		if (x == "J") { return 10; }
-		else
-		{
-			cout << "Litery od A-J" << endl;
-			return 69;
-		}
-	}
-
-	bool check_zatoniecie(int x, int y, int z = 0)//z to czy bot czy grcz////0 gracz//1 or sth bot
+	bool check_zatoniecie(int x, int y, int z = 0)//z to czy tura bot czy gracz////0 - gracz///1 or sth - bot
 	{
 		vector<pair<int, int>> re_pamiec;
 		int k = 1;
@@ -487,7 +506,8 @@ public:
 		{
 
 
-			if (z == 1) {
+			if (z == 1) 
+			{
 
 
 				if (pustabot.check(re_pamiec[i].first, re_pamiec[i].second) == 0)
@@ -555,7 +575,7 @@ public:
 					}
 				}
 			}
-			for (size_t k = 0; k < re_pamiec.size(); k++)///dodatkowo u gracza
+			for (size_t k = 0; k < re_pamiec.size(); k++)
 			{
 				if (z == 1)
 				{
@@ -589,7 +609,7 @@ public:
 				} while (kordy.length() == 1 || kordy.length() > 3);
 				string litera;
 				litera = kordy[0];
-				y = konwenter(litera);
+				y = gracz.konwenter(litera);
 
 			} while (y > 10 || y < 1);
 			string n="";
@@ -605,7 +625,6 @@ public:
 				{
 					if (pusta.check(x, y) == 0 || pusta.check(x, y) == 2)//bez powtarzania
 					{
-						cout << x << y;
 						t = 1;
 					}
 					else
@@ -699,19 +718,18 @@ public:
 	void bot_komunikat_pudlo(int x, int y)
 	{
 		Sleep(1000);
-		cout << "BOT STRZELA I PUDLUJE! " << dekonwerter(y) << x << endl<<endl;
+		cout << "BOT STRZELA I PUDLUJE! " << gracz.dekonwerter(y) << x << endl<<endl;
 		gracz.setPudlo(x, y);
 		pustabot.setPudlo(x, y);
 
-		gracz.showplansza();
-		
+		gracz.showplansza();		
 		pusta.showplansza();
 		cout  << "######################################################################" << endl<<endl;
 	}
 	void bot_komunikat_traf(int x, int y)
 	{
 		Sleep(1000);
-		cout << "BOT STRZELA I TRAFIA! " << dekonwerter(y) << x << endl<<endl;
+		cout << "BOT STRZELA I TRAFIA! " << gracz.dekonwerter(y) << x << endl<<endl;
 		gracz.setTraf(x, y);
 		pustabot.setTraf(x, y);
 		znalazl = 1;
@@ -726,7 +744,6 @@ public:
 		pusta.showplansza();
 		cout <<"######################################################################" << endl<<endl;
 	}
-
 
 	int szukanie_celu_odejmowanie_dodawanie(int Q=1)//Q1 DODAWNIE // odejmowanie cokolwiek innego 
 	{
@@ -945,7 +962,7 @@ public:
 		{
 			pusta.setPudlo(strzal[0], strzal[1]);
 			system("cls");
-			cout << "SPUDLOWALES! " << dekonwerter(strzal[1]) << strzal[0]<< endl<<endl;
+			cout << "SPUDLOWALES! " << gracz.dekonwerter(strzal[1]) << strzal[0]<< endl<<endl;
 			gracz.showplansza();
 			cout << endl;
 			pusta.showplansza();
@@ -957,7 +974,7 @@ public:
 		{
 			pusta.setTraf(strzal[0], strzal[1]);
 			system("cls");
-			cout << "TRAFILES! "<<dekonwerter(strzal[1])<<strzal[0] << endl<<endl;
+			cout << "TRAFILES! "<<gracz.dekonwerter(strzal[1])<<strzal[0] << endl<<endl;
 			
 			check_zatoniecie(strzal[0], strzal[1],0);
 			gracz.showplansza();
@@ -1030,6 +1047,4 @@ int main()
 
 	return 0;
 }
-
-
 
