@@ -1,0 +1,1042 @@
+
+#include <iostream>
+#include "time.h"
+#include "string"
+#include <Windows.h>
+#include <random>
+#include <vector>
+
+
+using namespace std;
+
+class Map
+{
+
+private:
+	vector<string> Letters;
+	string Board[12][12];
+	vector<vector<pair<int, int>>> Memory;
+
+public:
+
+	Map()
+	{
+		for (int i = 0; i < 12; i++) {
+			for (int y = 0; y < 12; y++) {
+
+				Board[i][y] = "0";
+			}
+		}
+		set_vector_Letters();
+	}
+
+	void set_vector_Letters()
+	{
+		Letters.push_back("NULL");
+		Letters.push_back("A");
+		Letters.push_back("B");
+		Letters.push_back("C");
+		Letters.push_back("D");
+		Letters.push_back("E");
+		Letters.push_back("F");
+		Letters.push_back("G");
+		Letters.push_back("H");
+		Letters.push_back("I");
+		Letters.push_back("J");
+	}
+
+	vector<pair<int, int>> re_Memory(int i)
+	{
+		return Memory[i];
+	}
+
+	string Converter_1_A(int x)
+	{
+		if (x == 1) { return "A"; }
+		if (x == 2) { return "B"; }
+		if (x == 3) { return "C"; }
+		if (x == 4) { return "D"; }
+		if (x == 5) { return "E"; }
+		if (x == 6) { return "F"; }
+		if (x == 7) { return "G"; }
+		if (x == 8) { return "H"; }
+		if (x == 9) { return "I"; }
+		if (x == 10) { return "J"; }
+		else return "Error!" ;
+	}
+
+	int Converter_A_1(string x)
+	{
+		if (x == "A") { return 1; }
+		if (x == "B") { return 2; }
+		if (x == "C") { return 3; }
+		if (x == "D") { return 4; }
+		if (x == "E") { return 5; }
+		if (x == "F") { return 6; }
+		if (x == "G") { return 7; }
+		if (x == "H") { return 8; }
+		if (x == "I") { return 9; }
+		if (x == "J") { return 10; }
+		else
+		{
+			cout << "Letters from A-J" << endl;
+			return 0;
+		}
+	}
+
+	vector<pair<int, int>> Find_in_Memory(int x, int y)
+	{
+		int Ship_number = 0;
+		for (size_t j = 0; j < Memory.size(); j++)
+		{
+			for (size_t i = 0; i < Memory[j].size(); i++)
+			{
+
+				if (x == Memory[j][i].first && y == Memory[j][i].second)
+				{
+					Ship_number = j;
+				}
+			}
+		}
+		return	 Memory[Ship_number];
+	}
+
+	void show_Memory() 
+	{
+		for (size_t j = 0; j < Memory.size(); j++)
+		{
+			for (size_t i = 0; i < Memory[j].size(); i++)
+			{
+				cout << Memory[j][i].first;
+				cout << Memory[j][i].second;
+				cout << endl;
+			}
+		}
+	}
+
+	int get_rand2()
+	{
+
+		return rand() % 2;
+	}
+
+	int get_rand()
+	{
+		return rand() % 10 + 1;
+	}
+
+	int Check(int x, int y)
+	{
+		if (Board[x][y] == "0")
+		{
+			return 0;
+		}
+		if (Board[x][y] == "X")
+		{
+			return 3; 
+		}
+		if (Board[x][y] == "*")
+		{
+			return 1;
+		}
+		else
+			return 2;
+	}
+
+	void set_Missed(int x, int y)
+	{
+		Board[x][y] = "*";
+	}
+
+	void set_Hit(int x, int y)
+	{
+		Board[x][y] = "X";
+	}
+
+	void show_Board()
+	{
+		cout << "X 1 2 3 4 5 6 7 8 9 10" << endl;
+
+		for (int i = 1; i < 11; i++)
+		{
+			cout << Letters[i] << " ";
+			for (int y = 1; y < 11; y++)
+			{
+				cout << Board[y][i];
+				cout << " ";
+			}
+			cout << endl;
+		}
+		cout << endl;
+	}
+
+	void set_rand_Map()
+	{
+		Drawing(6);
+		Drawing(4);
+		Drawing(4);
+		Drawing(3);
+		Drawing(3);
+		Drawing(2);
+		Drawing(2);
+
+	}
+
+	void Drawing(int size) {
+
+		int good = 0;
+		do
+		{
+			int p = get_rand2();
+			int x = get_rand();
+			int y = get_rand();
+
+			good = ship_Arrangment(x, y, p, size);
+
+		} while (good == 0);
+
+	}
+
+	void Ship(int size)
+	{
+		if (size == 6) { cout << " Create an aircraft carrier 1x6 "; }
+		if (size == 4) { cout << " Create a battleship 1x4 "; }
+		if (size == 3) { cout << " Create a civider 1x3"; }
+		if (size == 2) { cout << " Create a destroyer 1x2"; }
+	}
+
+	void pick_Letter(int x, int y, int pair, int size, int v_or_h) 
+	{
+		if (v_or_h == 0) {
+			if (size == 6)
+			{
+				Board[x + pair][y] = "L";
+			}
+			if (size == 4) {
+				Board[x + pair][y] = "P";
+			}
+			if (size == 3) {
+				Board[x + pair][y] = "K";
+			}
+			if (size == 2) {
+				Board[x + pair][y] = "N";
+			}
+		}
+		else {
+			if (size == 6)
+			{
+				Board[x][y + pair] = "L";
+			}
+			if (size == 4) {
+				Board[x][y + pair] = "P";
+			}
+			if (size == 3) {
+				Board[x][y + pair] = "K";
+			}
+			if (size == 2) {
+				Board[x][y + pair] = "N";
+			}
+		}
+	}
+
+
+	int ship_Arrangment(int x, int y, int p, int r)
+	{
+		vector<pair<int, int>>Memory_localization;
+		int i = x;
+		int j = y;
+		bool check = true;
+
+		if (p == 0)
+		{
+			for (i = x - 1; i <= x + r; i++)
+			{
+				for (j = y - 1; j <= y + 1; j++) {
+
+
+					if (Board[i][j] != "0")
+					{
+						check = false;
+
+					}
+				}
+			}
+
+		}
+		else
+		{
+			for (i = x - 1; i <= x + 1; i++)
+			{
+				for (j = y - 1; j <= y + r; j++) {
+
+
+					if (Board[i][j] != "0")
+					{
+
+						check = false;
+
+					}
+				}
+			}
+		}
+
+		if (p == 0 && x < 12 - r && check == true)
+		{
+			for (int pair = 0; pair < r; pair++) {
+				pick_Letter(x, y, pair, r, p);
+
+
+				Memory_localization.push_back(make_pair(x + pair, y));
+			}
+			Memory.push_back(Memory_localization);
+		}
+		if (p == 1 && y < 12 - r && check == true)
+		{
+			for (int para = 0; para < r; para++)
+			{
+				pick_Letter(x, y, para, r, p);
+				Memory_localization.push_back(make_pair(x, y + para));
+			}
+
+			Memory.push_back(Memory_localization);
+		}
+		if ((y >= 12 - r && p == 1) || (x >= 12 - r && p == 0)) 
+		{
+			check = 0;
+		}
+
+		if (check == 0)
+		{
+
+			return 0;
+		}
+		else
+			return 1;
+
+	}
+
+	void Protection_Creation(int size)
+	{
+		int good, good2;
+		string position = "";
+		string coordinates = "";
+		int p, x, y;
+		bool t;
+
+		do
+		{
+			do
+			{
+				t = 0;
+				do
+				{
+					do
+					{
+						coordinates = "";
+						cout << " Enter the coordinates(A1/J10) ";
+						Ship(size);
+						cout << endl;
+						cin >> coordinates;
+
+						if (coordinates.length() == 1) {
+							cout << "You must enter a letter and a number!" << endl;
+						}
+
+					} while (coordinates.length() == 1 || coordinates.length() > 3);
+					string letter;
+					letter = coordinates[0];
+					y = Converter_A_1(letter);
+
+				} while (y > 10 || y < 1);
+				string n = "";
+				string n1 = "";
+				n = (coordinates[1]);
+				n1 = (coordinates[2]);
+
+				if (isdigit(n[0]) && (isdigit(n1[0]) || n.length() + n1.length() < 3))
+				{
+					x = stoi(n + n1);
+
+					if (x > 0 && x < 11)
+					{
+						if (Check(x, y) == 0)
+						{
+							t = 1;
+						}
+
+						else
+						{
+							cout << "You connot choose the same point!" << endl;
+						}
+					}
+
+					else
+					{
+						cout << "Number from the range 1-10!!" << endl;
+					}
+				}
+				else
+				{
+					cout << "Please write also the number e.g A1" << endl;
+				}
+			} while (t == 0);
+
+			do
+			{
+				cout << "Choose horizontal or verical position( HO / VE ) ! " << endl;
+				cin >> position;
+				if (position == "HO" || position == "VE")
+				{
+
+					if (position == "HO")
+					{
+						p = 0;
+					}
+					else
+					{
+						p = 1;
+					}
+					good = 1;
+				}
+				else {
+					good = 0;
+				}
+			} while (good == 0);
+
+			good2 = ship_Arrangment(x, y, p, size);
+			if (good2 == 0) {
+				cout << "You are out of scope!" << endl;
+			}
+		} while (good2 == 0);
+		system("cls");
+		show_Board();
+	}
+
+	void Creation_Player()
+	{
+		Protection_Creation(6);
+		Protection_Creation(4);
+		Protection_Creation(4);
+		Protection_Creation(3);
+		Protection_Creation(3);
+		Protection_Creation(2);
+		Protection_Creation(2);
+	}
+};
+
+class Game
+{
+private:
+
+	vector<pair<int, int>> shot_bot;
+	bool find = 0;
+	int position = 2; 
+	class Map Empty_Board_Bot;
+	class Map Empty_Board;
+	class Map Player;
+	class Map Bot;
+	int shoot[1];
+
+public:
+
+	Game()
+	{
+		string choice;
+		cout << "Enter LOS if you want a random board // if you want customise enter anything." << endl;
+		cin >> choice;
+		system("cls");
+		if (choice == "LOS")
+		{
+			Player.set_rand_Map();
+		}
+		else {
+			Player.show_Board();
+			Player.Creation_Player();
+		}
+		system("cls");
+
+
+		Player.show_Board();
+		Bot.set_rand_Map();
+		cout << endl;
+		Empty_Board.show_Board();
+		set_Vector();
+		load_the_shot_Player(0, 0);
+	}
+	int get_rand4()
+	{
+		return rand() % 3;
+	}
+
+	void set_Vector()
+	{
+		for (int i = 0; i < 4; i++) {
+			shot_bot.push_back(make_pair(0, 0));
+		}
+	}
+	void clear_Vector() {
+
+		for (int i = 0; i < 4; i++)
+		{
+			shot_bot[i] = (make_pair(0, 0));
+		}
+
+	}
+
+
+	bool check_Drowning(int x, int y, int z = 0)
+	{
+		vector<pair<int, int>> re_Memory;
+		int k = 1;
+		if (z == 1)
+		{
+			re_Memory = Player.Find_in_Memory(x, y); 
+		}
+		else
+		{
+			re_Memory = Bot.Find_in_Memory(x, y);
+		}
+
+		for (size_t i = 0; i < re_Memory.size(); i++)
+		{
+
+
+			if (z == 1)
+			{
+
+
+				if (Empty_Board_Bot.Check(re_Memory[i].first, re_Memory[i].second) == 0)
+				{
+					k = 0;
+				}
+			}
+			else
+			{
+				if (Empty_Board.Check(re_Memory[i].first, re_Memory[i].second) == 0)
+				{
+					k = 0;
+				}
+			}
+		}
+
+		if (k == 1)
+		{
+			bool position;
+			cout << "Sunk!" << endl;
+			if (re_Memory[0].first == re_Memory[1].first)
+			{
+				position = 0;//pion
+			}
+			else { position = 1; }
+
+			if (position == 0) 
+			{
+				for (size_t i = 0; i < re_Memory.size(); i++)
+				{
+					for (int k = -1; k < 2; k++)
+					{
+						for (int j = -1; j < 2; j += 2)
+						{
+							if (z == 1)
+							{
+								Empty_Board_Bot.set_Missed(re_Memory[i].first + k, re_Memory[i].second + j);
+								Player.set_Missed(re_Memory[i].first + k, re_Memory[i].second + j);
+							}
+							else
+							{
+								Empty_Board.set_Missed(re_Memory[i].first + k, re_Memory[i].second + j);
+							}
+						}
+					}
+				}
+			}
+			else {
+				for (size_t i = 0; i < re_Memory.size(); i++)
+				{
+					for (int k = -1; k < 2; k++)
+					{
+						for (int j = -1; j < 2; j += 2)
+						{
+							if (z == 1)
+							{
+								Empty_Board_Bot.set_Missed(re_Memory[i].first + j, re_Memory[i].second + k);
+								Player.set_Missed(re_Memory[i].first + j, re_Memory[i].second + k);
+							}
+							else
+							{
+								Empty_Board.set_Missed(re_Memory[i].first + j, re_Memory[i].second + k);
+							}
+						}
+					}
+				}
+			}
+			for (size_t k = 0; k < re_Memory.size(); k++)
+			{
+				if (z == 1)
+				{
+					Empty_Board_Bot.set_Hit(re_Memory[k].first, re_Memory[k].second);
+					Player.set_Hit(re_Memory[k].first, re_Memory[k].second);
+				}
+				else
+				{
+					Empty_Board.set_Hit(re_Memory[k].first, re_Memory[k].second);
+				}
+			}
+		}
+		return k;
+	}
+
+	void secure_Shot_Player()
+	{
+		string kordy = "";
+		int x, y;
+		bool t;
+		do
+		{
+			t = 0;
+			do
+			{
+				do
+				{
+					kordy = "";
+					cout << " Enter the coordinates(A1/J10). " << endl;
+					cin >> kordy;
+				} while (kordy.length() == 1 || kordy.length() > 3);
+				string litera;
+				litera = kordy[0];
+				y = Player.Converter_A_1(litera);
+
+			} while (y > 10 || y < 1);
+			string n = "";
+			string n1 = "";
+			n = (kordy[1]);
+			n1 = (kordy[2]);
+
+			if (isdigit(n[0]) && (isdigit(n1[0]) || n.length() + n1.length() < 3))
+			{
+				x = stoi(n + n1);
+
+				if (x > 0 && x < 11)
+				{
+					if (Empty_Board.Check(x, y) == 0 || Empty_Board.Check(x, y) == 2)
+					{
+						t = 1;
+					}
+					else
+					{
+						cout << "You cannot shoot in the same field!" << endl;
+					}
+				}
+				else
+				{
+					cout << "Number from the range 1-10!" << endl;
+				}
+			}
+			else
+			{
+				cout << "Please write also the number e.g A1" << endl;
+			}
+		} while (t == 0);
+
+		load_the_shot_Player(x, y);
+
+	}
+	void load_the_shot_Player(int x, int y) {
+
+		shoot[0] = x;
+		shoot[1] = y;
+	}
+
+	int Targeting()
+	{
+		int x, y, z;
+		bool t = 0;
+
+		x = shot_bot[0].first;
+		y = shot_bot[0].second;
+
+		do
+		{
+			x = shot_bot[0].first;
+			y = shot_bot[0].second;
+
+			z = get_rand4();
+			if (z == 0)
+			{
+				y++;
+			}
+			if (z == 1)
+			{
+				y--;
+			}
+			if (z == 2)
+			{
+				x--;
+			}
+			if (z == 3)
+			{
+				x++;
+			}
+
+			if (Empty_Board_Bot.Check(x, y) == 0)
+			{
+				if (x != 0 && x != 11 && y != 0 && y != 11)
+				{
+					t = 1;
+				}
+			}
+		} while (t == 0);
+
+		if (Player.Check(x, y) == 0)
+		{
+			Bot_miss(x, y);
+			return(0);
+		}
+		else
+		{
+			shot_bot[1].first = x;
+			shot_bot[1].second = y;
+
+			if (shot_bot[0].first == shot_bot[1].first)
+			{
+				position = 1;
+			}
+			else { position = 0; }
+
+			Bot_hit(x, y);
+
+			return(1);
+		}
+	}
+	void Bot_miss(int x, int y)
+	{
+		Sleep(1000);
+		cout << "The bot fired and missed! " << Player.Converter_1_A(y) << x << endl << endl;
+		Player.set_Missed(x, y);
+		Empty_Board_Bot.set_Missed(x, y);
+
+		Player.show_Board();
+		Empty_Board.show_Board();
+		cout << "######################################################################" << endl << endl;
+	}
+	void Bot_hit(int x, int y)
+	{
+		Sleep(1000);
+		cout << "The bot fired and HIT! " << Player.Converter_1_A(y) << x << endl << endl;
+		Player.set_Hit(x, y);
+		Empty_Board_Bot.set_Hit(x, y);
+		find = 1;
+		if (check_Drowning(x, y, 1) == 1)
+		{
+			position = 2;
+			find = 0;
+			clear_Vector();
+		}
+		Player.show_Board();
+
+		Empty_Board.show_Board();
+		cout << "######################################################################" << endl << endl;
+	}
+
+	int Finding_target(int Q = 1)
+	{
+		int x, y, d, c = 0, checkbot, fd = 0;
+		x = shot_bot[0].first;
+		y = shot_bot[0].second;
+		do
+		{
+			if (Q == 1)
+			{
+				c++;
+			}
+			else
+			{
+				c--;
+			}
+
+			if (position == 1)
+			{
+				checkbot = Empty_Board_Bot.Check(x, y + c);
+				d = y + c;
+			}
+			else
+			{
+				checkbot = Empty_Board_Bot.Check(x + c, y);
+				d = x + c;
+			}
+
+			if (d != 0 && d != 11) 
+			{
+				if (checkbot == 0)
+				{
+					if (position == 1)
+					{
+						shot_bot[3].first = x;
+						shot_bot[3].second = d;
+					}
+					else
+					{
+						shot_bot[3].first = d;
+						shot_bot[3].second = y;
+					}
+					return(1);
+				}
+				if (checkbot == 1) 
+				{
+					return(2);
+				}
+				else {
+					fd = 0;
+				}
+			}
+			else
+			{
+				return(2);
+			}
+		} while (fd == 0);
+		return(1);
+	}
+
+	void Shoot_Strike()
+	{
+		int randomly, c = 0, fd = 0;
+		randomly = Player.get_rand2();
+		do {
+			if (randomly == 0)
+			{
+				c = Finding_target();
+				if (c == 2)
+				{
+					randomly = 2;
+				}
+				else {
+					fd = 1;
+				}
+
+			}
+			else
+			{
+				c = Finding_target(96);
+				if (c == 2)
+				{
+					randomly = 0;
+				}
+				else {
+					fd = 1;
+				}
+			}
+		} while (fd == 0);
+	}
+
+	void Bot_Logic()
+	{
+
+		bool series = 0;
+		do
+		{
+			if (check_Gameover(Empty_Board_Bot) == 0)
+			{
+				if (find == 0)
+				{
+					load_the_shot_Bot();
+					series = Bot_results();
+
+				}
+				else
+				{
+
+					if (position == 2)
+					{
+						series = Targeting();
+					}
+					else
+					{
+						Shoot_Strike();
+						series = Bot_results(3);
+					}
+				}
+			}
+			else
+			{
+				series = 0;
+			}
+		} while (series == 1);
+	}
+	int Neighborhood(int x, int y)
+	{
+		int i = 0;
+
+		if (Empty_Board_Bot.Check(x + 1, y) == 0) { i++; }
+		if (Empty_Board_Bot.Check(x - 1, y) == 0) { i++; }
+		if (Empty_Board_Bot.Check(x, y - 1) == 0) { i++; }
+		if (Empty_Board_Bot.Check(x, y + 1) == 0) { i++; }
+
+		return i;
+	}
+	int Bot_Stop_Shoot(int x, int y)
+	{
+
+		if (Empty_Board_Bot.Check(x, y) == 0)
+		{
+			if ((x == 1 && y == 1) || (x == 1 && y == 10) || (x == 10 && y == 1) || (x == 10 && y == 10))
+			{
+				if (Neighborhood(x, y) == 3 || Neighborhood(x, y) == 4) {
+					return 1;
+				}
+				else
+					return 0;
+
+			}
+			if ((x == 1 || x == 10) || ((y == 1 || y == 10)))
+			{
+				if (Neighborhood(x, y) == 3 || Neighborhood(x, y) == 4 || Neighborhood(x, y) == 2) {
+					return 1;
+				}
+				else
+					return 0;
+			}
+			else
+			{
+				if (Neighborhood(x, y) > 0) {
+					return 1;
+				}
+				else
+					return 0;
+			}
+		}
+		else
+			return 1;
+	}
+
+	void load_the_shot_Bot()
+	{
+		bool t = 0;
+		int x = 0, y = 0;
+		do
+		{
+			x = Bot.get_rand();
+			y = Bot.get_rand();
+
+			if (Empty_Board_Bot.Check(x, y) == 0 || Empty_Board_Bot.Check(x, y) == 2)
+			{
+				t = Bot_Stop_Shoot(x, y);
+			}
+
+		} while (t == 0);
+
+		shot_bot[0] = make_pair(x, y);
+
+	}
+	bool Bot_results(int i = 0)
+	{
+		int x, y, score = 5;
+		x = shot_bot[i].first,
+			y = shot_bot[i].second;
+		score = Player.Check(x, y);
+
+		if (score == 0)
+		{
+			Bot_miss(x, y);
+			return 0;
+		}
+		else
+		{
+			Bot_hit(x, y);
+			return 1;
+		}
+	}
+
+	int results_Board()
+	{
+		int score;
+		score = Bot.Check(shoot[0], shoot[1]);
+		if (score == 0)
+		{
+			Empty_Board.set_Missed(shoot[0], shoot[1]);
+			system("cls");
+			cout << "You missed! " << Player.Converter_1_A(shoot[1]) << shoot[0] << endl << endl;
+			Player.show_Board();
+			cout << endl;
+			Empty_Board.show_Board();
+			cout << "######################################################################" << endl;
+			return 0;
+
+		}
+		else
+		{
+			Empty_Board.set_Hit(shoot[0], shoot[1]);
+			system("cls");
+			cout << "You hit! " << Player.Converter_1_A(shoot[1]) << shoot[0] << endl << endl;
+
+			check_Drowning(shoot[0], shoot[1], 0);
+			Player.show_Board();
+			cout << endl;
+			Empty_Board.show_Board();
+			cout << "######################################################################" << endl;
+			return 1;
+		}
+	}
+	bool check_Gameover(Map X)
+	{
+		int k = 0;
+		for (int i = 1; i < 11; i++)
+		{
+			for (int j = 1; j < 11; j++)
+			{
+				if (X.Check(i, j) == 3)
+				{
+					k++;
+				}
+			}
+		}
+		if (k == 24)
+		{
+			return 1;
+		}
+		else {
+			return 0;
+		}
+	}
+
+	bool Gameover()
+	{
+		if (check_Gameover(Empty_Board_Bot) == 1) {
+			cout << "You lost!" << endl;
+			return 1;
+		}
+		if (check_Gameover(Empty_Board) == 1) {
+			cout << "You win!" << endl;
+			return 1;
+		}
+		else return 0;
+	}
+
+	void main_game()
+	{
+		do
+		{
+			bool series = 1;
+			do
+			{
+				secure_Shot_Player();
+				series = results_Board();
+
+
+			} while (series == 1 && check_Gameover(Empty_Board) == 0);
+
+			if (check_Gameover(Empty_Board) == 0)
+			{
+				Bot_Logic();
+			}
+		} while (Gameover() == 0);
+	}
+};
+
+int main()
+{
+
+	Game game;
+	game.main_game();
+	
+	return 0;
+}
